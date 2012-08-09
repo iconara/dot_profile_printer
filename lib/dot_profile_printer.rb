@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 require 'jruby/profiler'
+require 'set'
 
 
 module JRuby
