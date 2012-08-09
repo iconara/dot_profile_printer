@@ -47,6 +47,13 @@ module JRuby
         </TABLE>
       end
 
+      def basic_html_escape(str)
+        str = str.gsub('&', '&amp;')
+        str.gsub!('<', '&lt;')
+        str.gsub!('>', '&gt;')
+        str
+      end
+
       def print_profile(io)
         methods = method_data(@top)
 
@@ -62,9 +69,9 @@ module JRuby
           method_name = method_name(self_serial).to_s
           package, _, class_and_method = method_name.rpartition('::')
           if package.empty?
-            title = NODE_TITLE_ONE_LINE_FORMAT % [class_and_method]
+            title = NODE_TITLE_ONE_LINE_FORMAT % [basic_html_escape(class_and_method)]
           else
-            title = NODE_TITLE_TWO_LINE_FORMAT % [package, class_and_method]
+            title = NODE_TITLE_TWO_LINE_FORMAT % [package, basic_html_escape(class_and_method)]
           end
           label = NODE_LABEL_TEMPLATE % [title, total_time, self_time, total_calls]
           io.puts(NODE_DIRECTIVE_FORMAT % [self_serial, label])
