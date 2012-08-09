@@ -73,8 +73,8 @@ module JRuby
 
       private
 
-      NODE_DIRECTIVE_FORMAT = %|\tnode_%-5d [label=%s];|
-      EDGE_DIRECTIVE_FORMAT = %|\tnode_%-5d -> node_%-5d [label="%s"];|
+      NODE_DIRECTIVE_FORMAT = %|\tmethod_%-5d [label=%s];|
+      EDGE_DIRECTIVE_FORMAT = %|\tmethod_%-5d -> method_%-5d [label="%s"];|
       GLOBAL_NODE_DIRECTIVE = %|\tnode [fontname="%s", fontsize="14", shape="%s"];|
       GLOBAL_EDGE_DIRECTIVE = %|\tedge [fontname="%s", fontsize="12"];|
       GRAPH_START_DIRECTIVE = 'digraph profile {'
