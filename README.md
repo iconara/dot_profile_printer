@@ -2,7 +2,7 @@
 
 A profile printer that outputs DOT files. DOT is a graph description format which can be rendered with GraphViz to make pretty graphs such as this:
 
-![](examples/example.png "Pretty graph")
+![](https://raw.github.com/iconara/dot_profile_printer/master/examples/example.png "Pretty graph")
 
 It's heavily inspired by [perftools.rb](https://github.com/tmm1/perftools.rb), the best profiler I've ever used.
 
