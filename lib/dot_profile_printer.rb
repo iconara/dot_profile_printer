@@ -11,7 +11,7 @@ module JRuby
         super()
         @top = invocation
         @font_name = options[:font_name] || 'Menlo'
-        if (renderer_class = NODE_LABEL_RENDERERS[options[:node_label_renderer] || :html])
+        if (renderer_class = NODE_LABEL_RENDERERS[options[:node_label_renderer] || :table])
           @node_label_renderer = renderer_class.new
         else
           raise ArgumentError, %|No node label renderer for "#{options[:node_label_renderer]}"|
@@ -98,7 +98,7 @@ module JRuby
         end
       end
 
-      class HtmlNodeLabelRenderer
+      class TableNodeLabelRenderer
         TEMPLATE = %{
           <
             <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="8">
@@ -159,7 +159,7 @@ module JRuby
 
       NODE_LABEL_RENDERERS = {
         :simple => SimpleNodeLabelRenderer,
-        :html => HtmlNodeLabelRenderer
+        :table => TableNodeLabelRenderer
       }
     end
   end
