@@ -35,12 +35,15 @@ module JRuby
         io.puts(GLOBAL_EDGE_DIRECTIVE % [@font_name])
         io.puts
 
+        top_total_time = @top.duration/1000000.0
+
         methods.each do |self_serial, data|
           total_time = (data.total_time/1000000.0)
           self_time = (data.self_time/1000000.0)
+          percent_time = total_time/top_total_time * 100
           total_calls = data.total_calls
           method_name = method_name(self_serial).to_s
-          label = @node_label_renderer.render(method_name, total_time, self_time, total_calls)
+          label = @node_label_renderer.render(method_name, percent_time, total_time, self_time, total_calls)
           io.puts(NODE_DIRECTIVE_FORMAT % [self_serial, label])
         end
 
@@ -81,15 +84,15 @@ module JRuby
       GRAPH_END_DIRECTIVE   = '}'
 
       class SimpleNodeLabelRenderer
-        TEMPLATE = '"%s\n%s\ntotal: %.3fs\nself: %.3fs\ncalls: %d"'
+        TEMPLATE = '"%s\n%s\ntotal: %.3fs (%.1f%%)\nself: %.3fs\ncalls: %d"'
 
         def node_shape
           'box'
         end
 
-        def render(method_name, total_time, self_time, total_calls)
+        def render(method_name, percent_time, total_time, self_time, total_calls)
           package, _, class_and_method = method_name.rpartition('::')
-          label = TEMPLATE % [package, class_and_method, total_time, self_time, total_calls]
+          label = TEMPLATE % [package, class_and_method, total_time, percent_time, self_time, total_calls]
           label.gsub!(/^"\\n/, '"')
           label
         end
@@ -107,7 +110,7 @@ module JRuby
                   <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0" CELLPADDING="0">
                     <TR>
                       <TD ALIGN="LEFT">total </TD>
-                      <TD ALIGN="RIGHT">%.3fs</TD>
+                      <TD ALIGN="RIGHT">(%.1f%%) %.3fs</TD>
                     </TR>
                     <TR>
                       <TD ALIGN="LEFT">self </TD>
@@ -131,14 +134,14 @@ module JRuby
           'plaintext'
         end
 
-        def render(method_name, total_time, self_time, total_calls)
+        def render(method_name, percent_time, total_time, self_time, total_calls)
           package, _, class_and_method = method_name.rpartition('::')
           if package.empty?
             title = ONE_LINE_TITLE % [basic_html_escape(class_and_method)]
           else
             title = TWO_LINE_TITLE % [package, basic_html_escape(class_and_method)]
           end
-          label = TEMPLATE % [title, total_time, self_time, total_calls]
+          label = TEMPLATE % [title, percent_time, total_time, self_time, total_calls]
           label.gsub!(/^\s*/, '')
           label.gsub!("\n", '')
           label
