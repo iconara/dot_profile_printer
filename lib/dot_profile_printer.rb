@@ -18,21 +18,12 @@ module JRuby
         end
       end
 
-      def node_label_html(package, class_and_method, total_time, self_time, total_calls)
-        if package.empty?
-          title = NODE_TITLE_HTML_ONE_LINE_FORMAT % [basic_html_escape(class_and_method)]
-        else
-          title = NODE_TITLE_HTML_TWO_LINE_FORMAT % [package, basic_html_escape(class_and_method)]
-        end
-        NODE_LABEL_HTML_TEMPLATE % [title, total_time, self_time, total_calls]
-      end
-
       def print_profile(io)
         methods = method_data(@top)
 
         io.puts(GRAPH_START_DIRECTIVE)
-        io.puts(GLOBAL_NODE_DIRECTIVE % [@font_name, @node_label_renderer.node_shape])
-        io.puts(GLOBAL_EDGE_DIRECTIVE % [@font_name])
+        io.puts(GLOBAL_NODE_DIRECTIVE % [@font_name, base_font_size, @node_label_renderer.node_shape])
+        io.puts(GLOBAL_EDGE_DIRECTIVE % [@font_name, edge_font_size])
         io.puts
 
         top_total_time = @top.duration/1000000.0
