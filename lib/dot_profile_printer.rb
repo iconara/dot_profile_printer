@@ -11,15 +11,12 @@ module JRuby
         super()
         @top = invocation
         @font_name = options[:font_name] || 'Menlo'
-        @node_label_renderer = HtmlNodeLabelRenderer.new
+        if (renderer_class = NODE_LABEL_RENDERERS[options[:node_label_renderer] || :html])
+          @node_label_renderer = renderer_class.new
+        else
+          raise ArgumentError, %|No node label renderer for "#{options[:node_label_renderer]}"|
+        end
       end
-
-      NODE_DIRECTIVE_FORMAT = %|\tnode_%-5d [label=%s];|
-      EDGE_DIRECTIVE_FORMAT = %|\tnode_%-5d -> node_%-5d [label="%s"];|
-      GLOBAL_NODE_DIRECTIVE = %|\tnode [fontname="%s", fontsize="14", shape="%s"];|
-      GLOBAL_EDGE_DIRECTIVE = %|\tedge [fontname="%s", fontsize="12"];|
-      GRAPH_START_DIRECTIVE = 'digraph profile {'
-      GRAPH_END_DIRECTIVE   = '}'
 
       def node_label_html(package, class_and_method, total_time, self_time, total_calls)
         if package.empty?
@@ -74,7 +71,29 @@ module JRuby
         io.puts(GRAPH_END_DIRECTIVE)
       end
 
-    private
+      private
+
+      NODE_DIRECTIVE_FORMAT = %|\tnode_%-5d [label=%s];|
+      EDGE_DIRECTIVE_FORMAT = %|\tnode_%-5d -> node_%-5d [label="%s"];|
+      GLOBAL_NODE_DIRECTIVE = %|\tnode [fontname="%s", fontsize="14", shape="%s"];|
+      GLOBAL_EDGE_DIRECTIVE = %|\tedge [fontname="%s", fontsize="12"];|
+      GRAPH_START_DIRECTIVE = 'digraph profile {'
+      GRAPH_END_DIRECTIVE   = '}'
+
+      class SimpleNodeLabelRenderer
+        TEMPLATE = '"%s\n%s\ntotal: %.3fs\nself: %.3fs\ncalls: %d"'
+
+        def node_shape
+          'box'
+        end
+
+        def render(method_name, total_time, self_time, total_calls)
+          package, _, class_and_method = method_name.rpartition('::')
+          label = TEMPLATE % [package, class_and_method, total_time, self_time, total_calls]
+          label.gsub!(/^"\\n/, '"')
+          label
+        end
+      end
 
       class HtmlNodeLabelRenderer
         TEMPLATE = %{
@@ -103,7 +122,7 @@ module JRuby
               </TR>
             </TABLE>
           >
-        }
+        }.freeze
 
         ONE_LINE_TITLE = '<FONT POINT-SIZE="18">%s</FONT><BR/>'
         TWO_LINE_TITLE = "%s<BR/>#{ONE_LINE_TITLE}"
@@ -134,6 +153,11 @@ module JRuby
           str
         end
       end
+
+      NODE_LABEL_RENDERERS = {
+        :simple => SimpleNodeLabelRenderer,
+        :html => HtmlNodeLabelRenderer
+      }
     end
   end
 end
