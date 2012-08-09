@@ -45,6 +45,8 @@ The `dot` command is part of GraphViz, make sure you have it installed. To find 
 
 Have a look in the examples directory and run `run.sh` to see some examples. For each `.rb` file in the directory it will generate a DOT file (`.gv`), a PNG and a PDF.
 
+The DOT output is pretty straight forward, but the node labels are a mess (1999 called and wanted their tables back, but I this hacker ain't listening). If someone knows how to get different font sizes, horizontal rules and full text justification in DOT, please let me know.
+
 ## Copyright
 
 © 2012 Theo Hultberg
