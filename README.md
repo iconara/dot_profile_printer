@@ -8,7 +8,9 @@ It's heavily inspired by [perftools.rb](https://github.com/tmm1/perftools.rb), t
 
 ## Requiremets
 
-JRuby 1.6+. You also need [GraphViz](http://graphviz.org/), or another compatible tool such as [CanViz](http://canviz.org), to render the graphs. GraphViz can be installed with Homebrew, apt, yum or be downloaded from [graphviz.org](http://graphviz.org/).
+JRuby 1.6+. _1.7.0 is not supported_, the 1.6 and 1.7 profiler printer APIs are not compatible, but making a 1.7 compatible version isn't hard and I'll do that as soon as I can.
+
+You also need [GraphViz](http://graphviz.org/), or another compatible tool such as [CanViz](http://canviz.org), to render the graphs. GraphViz can be installed with Homebrew, apt, yum or be downloaded from [graphviz.org](http://graphviz.org/).
 
 ## The long version
 
